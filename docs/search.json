@@ -1,0 +1,28 @@
+{
+  "articles": [
+    {
+      "path": "about.html",
+      "title": "About this site",
+      "description": "Some additional details about the website",
+      "author": [],
+      "contents": "\n\n\n\n",
+      "last_modified": "2022-01-24T14:15:13-08:00"
+    },
+    {
+      "path": "index.html",
+      "title": "Mia Guarnieri",
+      "description": "Welcome to the website. I hope you enjoy it!\n",
+      "author": [],
+      "contents": "\n\n          \n          \n          \n          \n          \n          Home\n          About\n          ☰\n          \n          \n      \n        \n          \n            Mia Guarnieri\n          \n          \n            \n              \n            \n            \n              \n            \n          \n\n          \n            \n              \n                  \n                    \n                      LinkedIn\n                    \n                  \n                \n                                \n                  \n                    \n                      Twitter\n                    \n                  \n                \n                                \n                  \n                    \n                      GitHub\n                    \n                  \n                \n                                \n                  \n                    \n                      Email\n                    \n                  \n                \n                              \n          \n\n          \n            \n              \n                                \n                  \n                    LinkedIn\n                  \n                \n                                \n                  \n                    Twitter\n                  \n                \n                                \n                  \n                    GitHub\n                  \n                \n                                \n                  \n                    Email\n                  \n                \n                              \n            \n          \n        \n      \n    \n\n    \n    \n    ",
+      "last_modified": "2022-01-24T14:15:13-08:00"
+    },
+    {
+      "path": "Mia.html",
+      "title": "Xiang Guo",
+      "author": [],
+      "contents": "\n\n          \n          \n          \n          \n          \n          Home\n          About\n          ☰\n          \n          \n      \n        \n          \n            Xiang Guo\n          \n          \n            \n              Raised in New Jersey by two lawyers, I am now an aspiring data artist and competitive rock climber. I moved to Seattle to fly floatplanes, but I got caught up in the startup world. Send me a WhatsApp message if you have good turnip prices.\n            \n            \n              Raised in New Jersey by two lawyers, I am now an aspiring data artist and competitive rock climber. I moved to Seattle to fly floatplanes, but I got caught up in the startup world. Send me a WhatsApp message if you have good turnip prices.\n            \n          \n\n          \n            \n              \n                  \n                    \n                      LinkedIn\n                    \n                  \n                \n                                \n                  \n                    \n                      Twitter\n                    \n                  \n                \n                                \n                  \n                    \n                      GitHub\n                    \n                  \n                \n                                \n                  \n                    \n                      Email\n                    \n                  \n                \n                              \n          \n\n          \n            \n              \n                                \n                  \n                    LinkedIn\n                  \n                \n                                \n                  \n                    Twitter\n                  \n                \n                                \n                  \n                    GitHub\n                  \n                \n                                \n                  \n                    Email\n                  \n                \n                              \n            \n          \n        \n      \n    \n\n    \n    \n    ",
+      "last_modified": "2022-01-24T14:15:13-08:00"
+    }
+  ],
+  "collections": []
+}
