@@ -17,6 +17,8 @@ output:
 site: distill::distill_website
 ---
 
+I am a wildlife conservation biologist currently pursuing a Master of Environmental Science and Management degree at U.C. Santa Barbara's Bren School of Environmental Science & Management.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
@@ -25,6 +27,8 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Learn more about publishing to GitHub Pages at:
 # https://rstudio.github.io/distill/publish_website.html#github-pages
+
+distill::create_theme("theme")
 
 ```
 
