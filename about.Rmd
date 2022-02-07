@@ -1,7 +1,7 @@
 ---
-title: "About this site"
+title: "About me"
 description: |
-  Some additional details about the website
+  Mia Guarnieri graduated Magna Cum Laude from UC Davis in 2019 with a Bachelor of Science in Wildlife, Fish, and Conservation Biology and a focus in Wildlife Health. During her undergraduate career, she worked at the UC Davis Road Ecology Center under Dr. Fraser Shilling studying the efficacy of wildlife crossing structures under freeways. In that time, Mia was listed as a contributor in the published findings for the project and was granted a research fellowship from the National Center for Sustainable Transportation. She also designed two independent research projects in 2018 and 2019 and presented her findings at the UC Davis Undergraduate Research Conference. After graduating, Mia worked with several environmental consulting firms providing biological monitoring for construction and mitigation activities in the Bay Area and wildfire remediation in Big Basin State Forest. Mia has primarily tackled problems at the interface of humans and wildlife, focusing on habitat connectivity and reduction of human-wildlife conflict. She has extensive field experience, including fieldwork abroad at the Jaguar Conservation Fund in Brazil and the Ann Van Dyk Cheetah Center in South Africa. She is specializing in Conservation Planning, and hopes to continue advancing peaceful coexistence of humans and wildlife by promoting sustainable development, reducing human-wildlife conflict, and ensuring habitat connectivity in an ever-developing world.
 ---
 
 ```{r setup, include=FALSE}
