@@ -1,7 +1,7 @@
 ---
 title: "Welcome"
 description: |
-  A short description of the post.
+  Some information about me and my interests.
 author:
   - name: Mia Guarnieri
 date: 2022-02-07
@@ -15,8 +15,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Distill is a publication format for scientific and technical writing, native to the web.
-
-Learn more about using Distill at <https://rstudio.github.io/distill>.
+Welcome to my blog! I am a conservation biologist looking to solve the complex environmental problems of today's world.
 
 

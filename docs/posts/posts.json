@@ -2,7 +2,7 @@
   {
     "path": "posts/2022-02-07-welcome/",
     "title": "Welcome",
-    "description": "A short description of the post.",
+    "description": "Some information about me and my interests.",
     "author": [
       {
         "name": "Mia Guarnieri",
@@ -11,9 +11,9 @@
     ],
     "date": "2022-02-07",
     "categories": [],
-    "contents": "\nDistill is a publication format for scientific and technical writing, native to the web.\nLearn more about using Distill at https://rstudio.github.io/distill.\n\n\n\n",
+    "contents": "\nWelcome to my blog! I am a conservation biologist looking to solve the complex environmental problems of today’s world.\n\n\n\n",
     "preview": {},
-    "last_modified": "2022-02-07T15:13:33-08:00",
+    "last_modified": "2022-02-07T15:20:50-08:00",
     "input_file": {}
   }
 ]
