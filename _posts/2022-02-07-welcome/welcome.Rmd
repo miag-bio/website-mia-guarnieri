@@ -15,6 +15,6 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Welcome to my blog! I am a conservation biologist looking to solve the complex environmental problems of today's world.
+Welcome to my blog! I am a conservation biologist looking to solve the complex environmental problems of today's world. These posts contain examples of my previous work; feel free to click around and take a look for yourself.
 
 

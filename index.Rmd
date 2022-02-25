@@ -5,13 +5,15 @@ description: |
   Welcome to the website. I hope you enjoy it!
 links:
   - label: LinkedIn
-    url: "https://linkedin.com/"
-  - label: Twitter
-    url: "https://twitter.com/"
+    url: "https://www.linkedin.com/in/mia-guarnieri-102009178/"
+  - label: ResearchGate
+    url: "https://www.researchgate.net/profile/Mia-Guarnieri"
   - label: GitHub
-    url: "https://github.com/"
+    url: "https://github.com/miag-bio"
   - label: Email
-    url: "mailto:email@email.com"
+    url: "mailto:mguarnieri@bren.ucsb.edu"
+  - label: Resume
+    href: resume.pdf
 output:
   postcards::jolla
 site: distill::distill_website

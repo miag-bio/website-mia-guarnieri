@@ -1,0 +1,49 @@
+---
+title: "Visualizing CO2 emissions from food waste across countries"
+description: |
+  A graphic depicting per capita carbon dioxide emissions from food consumption of the 15 highest-emitting countries.
+author:
+  - name: Mia Guarnieri
+    url: {}
+date: 2021-12-05
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: code
+---
+
+```{r setup, include=TRUE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(calecopal)
+```
+
+```{r}
+#read in the data from github
+food_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+
+#creating a subset with the 15 countries with highest total annual per capita CO2 emissions from food consumption
+consumption_subset <- food_consumption %>% 
+  group_by(country) %>% #grouping by country
+  summarize(total_co2 = sum(co2_emmission, na.rm = TRUE)) %>% #creating summary table with total co2 emissions per country
+  slice_max(order_by = total_co2, n = 15) %>%  #keeping only the top 15 countries
+  mutate(country = fct_reorder(country, total_co2)) #making country a factor with level order based on total CO2 emissions 
+
+#making a finalized plot of top 15 co2 emitting countries
+ggplot(data = consumption_subset, aes(x = total_co2, y = country)) +
+  geom_col(aes(fill = country)) + #color-coding by country
+  scale_fill_manual(values = cal_palette(name = "bigsur", n = 15, type = "continuous")) + #selecting palette
+  labs(x = "Annual CO2 emissions from food consumption (kg CO2/person/year)", #adding labels
+       y = "Country") + 
+  theme_light() + #adding theme
+  theme(legend.position = "none") #removing legend
+
+```
+
+**Figure 1:** Total annual per capita CO2 emissions from food consumption by country (in kg CO2/person/year), sorted in descending order and color-coded by country. Countries with lower CO2 emissions are at the bottom of the graph and are lighter in color, with color darkening toward the top as total CO2 emissions increase. Data: nu3 Nutrition Experts 2019; Kulma 2020.
+
+# Data citation
+**Original source:** nu3 Nutrition Experts. 2019. "Food carbon footprint index 2018".https://www.nu3.de/blogs/nutrition/food-carbon-footprint-index-2018
+
+**Tidy data source:** Kulma, Kasia. 2020. "Webscraping with R - from messy & unstructured to blisfully tidy". https://r-tastic.co.uk/post/from-messy-to-tidy/

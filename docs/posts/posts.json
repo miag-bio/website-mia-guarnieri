@@ -11,9 +11,26 @@
     ],
     "date": "2022-02-07",
     "categories": [],
-    "contents": "\nWelcome to my blog! I am a conservation biologist looking to solve the complex environmental problems of today’s world.\n\n\n\n",
+    "contents": "\nWelcome to my blog! I am a conservation biologist looking to solve the complex environmental problems of today’s world. These posts contain examples of my previous work; feel free to click around and take a look for yourself.\n\n\n\n",
     "preview": {},
-    "last_modified": "2022-02-07T15:20:50-08:00",
+    "last_modified": "2022-02-25T10:26:05-08:00",
+    "input_file": {}
+  },
+  {
+    "path": "posts/2022-02-25-foodwaste/",
+    "title": "Visualizing CO2 emissions from food waste across countries",
+    "description": "A graphic depicting per capita carbon dioxide emissions from food consumption of the 15 highest-emitting countries.",
+    "author": [
+      {
+        "name": "Mia Guarnieri",
+        "url": {}
+      }
+    ],
+    "date": "2021-12-05",
+    "categories": [],
+    "contents": "\n\n\ncode\n\nknitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)\n\nlibrary(tidyverse)\nlibrary(calecopal)\n\n\n\n\n\ncode\n\n#read in the data from github\nfood_consumption <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')\n\n#creating a subset with the 15 countries with highest total annual per capita CO2 emissions from food consumption\nconsumption_subset <- food_consumption %>% \n  group_by(country) %>% #grouping by country\n  summarize(total_co2 = sum(co2_emmission, na.rm = TRUE)) %>% #creating summary table with total co2 emissions per country\n  slice_max(order_by = total_co2, n = 15) %>%  #keeping only the top 15 countries\n  mutate(country = fct_reorder(country, total_co2)) #making country a factor with level order based on total CO2 emissions \n\n#making a finalized plot of top 15 co2 emitting countries\nggplot(data = consumption_subset, aes(x = total_co2, y = country)) +\n  geom_col(aes(fill = country)) + #color-coding by country\n  scale_fill_manual(values = cal_palette(name = \"bigsur\", n = 15, type = \"continuous\")) + #selecting palette\n  labs(x = \"Annual CO2 emissions from food consumption (kg CO2/person/year)\", #adding labels\n       y = \"Country\") + \n  theme_light() + #adding theme\n  theme(legend.position = \"none\") #removing legend\n\n\n\n\nFigure 1: Total annual per capita CO2 emissions from food consumption by country (in kg CO2/person/year), sorted in descending order and color-coded by country. Countries with lower CO2 emissions are at the bottom of the graph and are lighter in color, with color darkening toward the top as total CO2 emissions increase. Data: nu3 Nutrition Experts 2019; Kulma 2020.\nData citation\nOriginal source: nu3 Nutrition Experts. 2019. “Food carbon footprint index 2018”.https://www.nu3.de/blogs/nutrition/food-carbon-footprint-index-2018\nTidy data source: Kulma, Kasia. 2020. “Webscraping with R - from messy & unstructured to blisfully tidy”. https://r-tastic.co.uk/post/from-messy-to-tidy/\n\n\n\n",
+    "preview": "posts/2022-02-25-foodwaste/foodwaste_files/figure-html5/unnamed-chunk-1-1.png",
+    "last_modified": "2022-02-25T12:08:23-08:00",
     "input_file": {}
   }
 ]
