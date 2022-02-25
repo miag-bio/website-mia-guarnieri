@@ -12,8 +12,8 @@ links:
     url: "https://github.com/miag-bio"
   - label: Email
     url: "mailto:mguarnieri@bren.ucsb.edu"
-  - label: Resume
-    href: resume.pdf
+  # - label: Resume
+  #   href: resume.pdf
 output:
   postcards::jolla
 site: distill::distill_website
