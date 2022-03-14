@@ -1,0 +1,83 @@
+---
+title: "Mono Lake water levels"
+description: |
+  A visualization depicting Mono Lake water levels through time, with relevant lake levels and historical events labeled.
+author:
+  - name: Mia Guarnieri
+    url: {}
+date: 2021-11-30
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: code
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, results = TRUE)
+library(tidyverse)
+library(here)
+library(janitor)
+```
+
+
+```{r}
+lake_levels <- read_csv(here("_posts", "2022-03-14-monolake", "data", "mono_lake_annual_levels.csv"), skip = 5) %>% 
+  clean_names()
+
+ggplot(data = lake_levels, aes(x = year, y = lake_level_feet_above_sea_level)) +
+  geom_ribbon(data = lake_levels %>% #adding shading between the stable line and the measurements
+                filter(lake_level_feet_above_sea_level <= 6392), aes(ymin = lake_level_feet_above_sea_level, ymax = 6392), fill = "firebrick" , alpha = 0.5) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(from = 1850, to = 2017, by = 20)) + #scaling the x axis
+  geom_hline(yintercept = 6377, color = "tan4", linetype = "twodash") + #adding land bridges line
+  annotate("text", x = 1880, y = 6379, label = "Emergence of land bridges (6377 ft)", color = "tan4") + #adding land bridges label
+  geom_hline(yintercept = 6392, color = "mediumblue", linetype = "longdash") + #adding stable level line
+  annotate("text", x = 1865, y = 6394, label = "Stable level (6392 ft)", color = "mediumblue") + #adding stable level label
+  geom_hline(yintercept = 6350, color = "dodgerblue4", linetype = "twodash") + #adding salinity line
+  annotate("text", x = 1875, y = 6352, label = "Salinity above 150 g/L (6350 ft)", color = "dodgerblue4") + #adding salinity label
+  theme_light() +
+  labs(x = "Year", y = "Lake Level (ft above sea level)", #adding labels and title
+       title = "Mono Lake water levels between 1850 and 2017") +
+  annotate(geom = "point", x = 1941, y = 6417.0, color = "blue4", size = 2) + #adding a point to the graph
+  annotate("segment", #adding a line coming out from that point
+           x = 1942, xend = 1941, 
+           y = 6424, yend = 6417.0,
+           colour = "blue4", 
+           size = 0.5) +
+  annotate("text", x = 1964, y = 6426, size = 3, label = "LA DWP begins diverting water 
+           from Mono Lake’s tributary streams", color = "blue4") + #adding a label at the end of that line
+  annotate(geom = "point", x = 1981, y = 6372.30, color = "blue4", size = 2) + #point
+  annotate("segment", #line
+           x = 1975, xend = 1981, 
+           y = 6369, yend = 6372.30,
+           colour = "blue4", 
+           size = 0.5) +
+  annotate("text", x = 1956, y = 6369, size = 3, label = "Mono Lake Tufa State 
+           Natural Reserve created", color = "blue4") + #label
+  annotate(geom = "point", x = 1983, y = 6378.60, color = "blue4", size = 2) + #point
+  annotate("segment", #line
+           x = 1985, xend = 1983, 
+           y = 6360, yend = 6378.60,
+           colour = "blue4", 
+           size = 0.5) +
+  annotate("text", x = 1985, y = 6356, size = 3, label = "CA obligated to
+           protect Mono Lake", color = "blue4") + #label
+  annotate(geom = "point", x = 1994, y = 6374.60, color = "blue4", size = 2) + #point
+  annotate("segment", #line
+           x = 1995, xend = 1994, 
+           y = 6365, yend = 6374.60,
+           colour = "blue4", 
+           size = 0.5) +
+  annotate("text", x = 2000, y = 6364, size = 3, label = "Decision 1631", color = "blue4") + #label
+  annotate(geom = "point", x = 1998, y = 6384.30, color = "blue4", size = 2) + #point
+  annotate("segment", #line
+           x = 2005, xend = 1998, 
+           y = 6375, yend = 6384.30,
+           colour = "blue4", 
+           size = 0.5) +
+  annotate("text", x = 2010, y = 6372, size = 3, label = "Restoration orders 
+  98-05 and 98-07", color = "blue4") + #label
+  theme(plot.title = element_text(hjust = 0.5, face = "bold")) #bolding and centering the title
+```
+
+**Figure 1:** Visualization of Mono Lake water levels (in feet above sea level) from 1850 to 2017, with relevant lake level and event annotations. The necessary **stable level** of the lake required to protect Mono Lake’s public trust values (6392 ft) is marked by a blue dashed line. For years where the recorded water level was below the stable level, the shaded red area marks how far below the stable level it was. The brown two-dashed line (6377ft) marks the lake level at which **land bridges** emerge between the mainland and islands, allowing predators to access important bird nesting sites. The lowest, darker blue two-dashed line (6350 ft) marks the lake level at which **salinity** would be high enough (150 g/L) to acutely impact brine shrimp and brine flies, the critical food resources for aquatic birds using Mono Lake, and reduce bird populations. The large decrease in lake levels begins in 1941, when the LA Department of Water & Power (DWP) began diverting water from Mono Lake’s tributary streams south to meet LA water demands. In 1981, the Mono Lake Tufa State Natural Reserve was created, and shortly after in 1983 the California Supreme Court ruled that the state has an obligation to protect places such as Mono Lake. In 1994, the State Water Board's **Decision 1631** set a lake level of 6392 feet to protect Mono Lake’s public trust values, required permanent streamflows for Mono Basin streams, and ordered DWP to restore streams and waterfowl habitat damaged as a result of diversions. Finally, in 1998, the State Water Board issued **restoration orders 98-05 and 98-07**, which required the DWP to implement a restoration plan for the Mono Basin’s streams and waterfowl habitat. The orders mandated raising Mono Lake to 6392 feet, improving existing freshwater ponds for migrating birds, and taking stream restoration measures such as implementing streamflow patterns based on the natural hydrograph.
