@@ -2,18 +2,35 @@
   {
     "path": "posts/2022-02-07-welcome/",
     "title": "Welcome",
-    "description": "Some information about me and my interests.",
+    "description": "Feel free to explore some of my past projects here!",
     "author": [
       {
         "name": "Mia Guarnieri",
         "url": {}
       }
     ],
-    "date": "2022-02-07",
+    "date": "2022-03-14",
     "categories": [],
     "contents": "\nWelcome to my blog! I am a conservation biologist looking to solve the complex environmental problems of today’s world. These posts contain examples of my previous work; feel free to click around and take a look for yourself.\n\n\n\n",
     "preview": {},
-    "last_modified": "2022-02-25T10:26:05-08:00",
+    "last_modified": "2022-03-14T20:28:48-07:00",
+    "input_file": {}
+  },
+  {
+    "path": "posts/2022-03-14-willamettefish/",
+    "title": "Visualizing fish passage through the Willamette River fish ladder",
+    "description": "Explore adult fish passage of three species recorded from 2001-01-01 to 2010-12-31 at the Willamette Falls fish ladder on the Willamette River in Oregon.",
+    "author": [
+      {
+        "name": "Mia Guarnieri",
+        "url": {}
+      }
+    ],
+    "date": "2022-03-14",
+    "categories": [],
+    "contents": "\n\n\ncode\n\nknitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)\n\n#attach packages\nlibrary(bslib)\nlibrary(here)\nlibrary(tidyverse)\nlibrary(lubridate)\nlibrary(tsibble)\nlibrary(feasts)\nlibrary(slider)\nlibrary(calecopal)\n\n#read in the data\nfish <- read_csv(here(\"_posts\", \"2022-03-14-willamettefish\", \"data\", \"willamette_fish_passage.csv\")) %>% \n  janitor::clean_names()\n\n\n\nOverview\nThis report explores adult fish passage recorded from 2001-01-01 to 2010-12-31 at the Willamette Falls fish ladder on the Willamette River in Oregon, focusing on three species: coho salmon, jack coho salmon, and steelhead trout. Counts of these species were recorded each day throughout the year as they passed through the fish ladder. Data were obtained from Columbia River Data Access in Real Time, and were compiled from a number of other sources.\n\n\ncode\n\nknitr::include_graphics(here(\"_posts\", \"2022-03-14-willamettefish\", \"data\", \"fishladder.jpg\"))\n\n\n\n\nFish Ladder on the Willamette River. Source: NOAA’s Historic Fisheries Collection.\n\n\ncode\n\nknitr::include_graphics(here(\"_posts\", \"2022-03-14-willamettefish\", \"data\", \"fishladdermap.jpg\"))\n\n\n\n\nMap of the Willamette Fish Ladder. Source: US Army Corps of Engineers.\nData Citation: Data were shared by and accessed from Columbia River DART (Data Access in Real Time). Data Courtesy of U.S. Army Corps of Engineers, NWD and Chelan, Douglas, and Grant County PUDs, Yakima Klickitat Fisheries Project, Colville Tribes Fish & Wildlife (OBMEP), Oregon Department of Fish & Wildlife, and Washington Department of Fish & Wildlife\nDaily Fish Passage\n\n\ncode\n\n#wrangle data into time series\nfish_ts <- fish %>% \n  mutate(date = lubridate::mdy(date)) %>% \n  as_tsibble(key = NULL, index = date) %>% \n  pivot_longer(cols = !c(project, date, temp_c), names_to = \"species\", values_to = \"count\") %>% \n  select(date, species, count) %>% \n  filter(species %in% c(\"coho\", \"jack_coho\", \"steelhead\")) %>% \n  mutate(species = case_when(species == \"coho\" ~ \"Coho\",\n                   species == \"jack_coho\" ~ \"Jack Coho\",\n                   species == \"steelhead\" ~ \"Steelhead\"))\n\n#replace NA value with 0\nfish_ts[is.na(fish_ts)] <- 0\n\n#get species counts\nspecies_counts <- fish_ts %>% \n  group_by(species)\n\n#plot\nggplot(data = species_counts, aes(x = date, y = count)) +\n  geom_line( aes(color = species)) +\n  scale_color_manual(values = cal_palette(\"superbloom3\")) +\n  labs(x = 'Year',\n       y = 'Fish Count',\n       color = \"Species\") +\n  facet_wrap(~ species) +\n  theme_minimal() +\n  theme(legend.position = \"none\")\n\n\n\n\nFigure 1: Daily fish passage counts for coho salmon, jack coho salmon, and steelhead trout through the Willamette Falls fish ladder from 2001 to the end of 2010. Data: Columbia River DART.\nTakeaways\nThere was a large increase in the number of coho salmon passing through the fish ladder between 2009 and the end of 2010.\nThe numbers of jack coho salmon passing through the ladder are substantially lower than the number of both coho salmon and steelhead trout, and peaked in late 2008.\nSteelhead had the most variation in daily counts, as can be seen by the width of the graph, but the highest counts remained relatively stable throughout the observation period, with a decrease around 2009.\nMonthly Fish Passage\n\n\ncode\n\n#monthly mean counts\nfish_month <- species_counts %>% \n  index_by(yr_mo = ~yearmonth(.)) %>% \n  summarize(monthly_counts = sum(count, na.rm = TRUE))\n\n#plot\nfish_month %>% \n  gg_season(y = monthly_counts,\n            pal = (cal_palette(\"kelp1\"))) +\n  theme_minimal() +\n  labs(x = \"Month\",\n       y = \"Fish Count\",\n       color = \"Year\")\n\n\n\n\nFigure 2: Monthly fish passage counts for coho salmon, jack coho salmon, and steelhead trout through the Willamette Falls fish ladder from 2001 to the end of 2010, color-coded by year. Data: Columbia River DART.\nTakeaways\nThe three fish species peak at different times of year, with coho and jack coho salmon activity increasing between August and November (peaking in September) and steelhead trout activity increasing between January and July (peaking between April and June).\nCoho and jack coho salmon have very similar seasonal activity patterns, possibly due to being more closely related to each other than they are to steelhead trout.\nSteelhead trout have a longer period of activity (about 6 months) than either salmon species (about 4 months).\n2009 and 2010 were highly productive years for coho salmon.\nAnnual Fish Passage\n\n\ncode\n\n#yearly counts\nfish_annual <- species_counts %>% \n  index_by(yearly = ~year(.)) %>% \n  summarize(annual_counts = sum(count, na.rm = TRUE))\n\nggplot(fish_annual, aes(x = yearly, y = annual_counts)) +\n  geom_line(aes(color = species)) +\n  scale_color_manual(values = cal_palette(\"superbloom3\")) +\n  scale_x_continuous(breaks = seq(2001, 2010, 2)) +\n  theme_minimal() +\n  labs(x = \"Year\",\n       y = \"Fish Count\")\n\n\n\n\nFigure 3: Annual fish passage counts for coho salmon, jack coho salmon, and steelhead trout through the Willamette Falls fish ladder from 2001 to the end of 2010, color-coded by species. Data: Columbia River DART.\nTakeaways\nAnnual counts of steelhead trout decreased consistently through 2009, and then began increasing again.\nAnnual counts of both coho and jack coho salmon were substantially lower than counts of steelhead, with the exception of 2009, where coho salmon counts exceeded steelhead trout counts.\nCoho numbers began increasing after 2008, while jack coho numbers remained relatively stable.\nOf the three fish species, jack coho salmon had the least variance from year to year.\n\n\n\n",
+    "preview": "posts/2022-03-14-willamettefish/data/fishladder.jpg",
+    "last_modified": "2022-03-14T20:14:19-07:00",
     "input_file": {}
   },
   {

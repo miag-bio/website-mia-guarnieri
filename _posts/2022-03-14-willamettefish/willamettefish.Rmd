@@ -1,0 +1,163 @@
+---
+title: "Visualizing fish passage through the Willamette River fish ladder"
+description: |
+  Explore adult fish passage of three species recorded from 2001-01-01 to 2010-12-31 at the Willamette Falls fish ladder on the Willamette River in Oregon.
+author:
+  - name: Mia Guarnieri
+    url: {}
+date: 2022-03-14
+output:
+  distill::distill_article:
+    self_contained: false
+    code_folding: code
+    fig_width: 9
+    fig_height: 7
+    theme: sandstone
+---
+
+```{r setup, include = TRUE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+#attach packages
+library(bslib)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(tsibble)
+library(feasts)
+library(slider)
+library(calecopal)
+
+#read in the data
+fish <- read_csv(here("_posts", "2022-03-14-willamettefish", "data", "willamette_fish_passage.csv")) %>% 
+  janitor::clean_names()
+```
+
+# Overview
+
+This report explores adult fish passage recorded from 2001-01-01 to 2010-12-31 at the Willamette Falls fish ladder on the Willamette River in Oregon, focusing on three species: coho salmon, jack coho salmon, and steelhead trout. Counts of these species were recorded each day throughout the year as they passed through the fish ladder. Data were obtained from Columbia River Data Access in Real Time, and were compiled from a number of other sources.
+
+```{r}
+knitr::include_graphics(here("_posts", "2022-03-14-willamettefish", "data", "fishladder.jpg"))
+```
+Fish Ladder on the Willamette River. Source: NOAA's Historic Fisheries Collection.
+
+```{r}
+knitr::include_graphics(here("_posts", "2022-03-14-willamettefish", "data", "fishladdermap.jpg"))
+```
+Map of the Willamette Fish Ladder. Source: US Army Corps of Engineers.
+
+**Data Citation:** Data were shared by and accessed from [Columbia River
+DART](http://www.cbr.washington.edu/dart/query/adult_graph_text) (Data
+Access in Real Time). Data Courtesy of [U.S. Army Corps of Engineers,
+NWD](http://www.nwd.usace.army.mil/) and
+[Chelan](http://www.chelanpud.org/),
+[Douglas](http://www.douglaspud.org/), and
+[Grant](http://www.gcpud.org/) County PUDs, [Yakima Klickitat Fisheries
+Project](http://www.ykfp.org/), [Colville Tribes Fish & Wildlife
+(OBMEP)](http://nrd.colvilletribes.com/obmep/), [Oregon Department of
+Fish & Wildlife](http://www.dfw.state.or.us/), and [Washington
+Department of Fish & Wildlife](http://www.wdfw.wa.gov/)
+
+# Daily Fish Passage
+
+```{r}
+#wrangle data into time series
+fish_ts <- fish %>% 
+  mutate(date = lubridate::mdy(date)) %>% 
+  as_tsibble(key = NULL, index = date) %>% 
+  pivot_longer(cols = !c(project, date, temp_c), names_to = "species", values_to = "count") %>% 
+  select(date, species, count) %>% 
+  filter(species %in% c("coho", "jack_coho", "steelhead")) %>% 
+  mutate(species = case_when(species == "coho" ~ "Coho",
+                   species == "jack_coho" ~ "Jack Coho",
+                   species == "steelhead" ~ "Steelhead"))
+
+#replace NA value with 0
+fish_ts[is.na(fish_ts)] <- 0
+
+#get species counts
+species_counts <- fish_ts %>% 
+  group_by(species)
+
+#plot
+ggplot(data = species_counts, aes(x = date, y = count)) +
+  geom_line( aes(color = species)) +
+  scale_color_manual(values = cal_palette("superbloom3")) +
+  labs(x = 'Year',
+       y = 'Fish Count',
+       color = "Species") +
+  facet_wrap(~ species) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+**Figure 1:** Daily fish passage counts for coho salmon, jack coho salmon, and steelhead trout through the Willamette Falls fish ladder from 2001 to the end of 2010. Data: Columbia River DART.
+
+## Takeaways
+
+- There was a large increase in the number of coho salmon passing through the fish ladder between 2009 and the end of 2010. 
+
+- The numbers of jack coho salmon passing through the ladder are substantially lower than the number of both coho salmon and steelhead trout, and peaked in late 2008.
+
+- Steelhead had the most variation in daily counts, as can be seen by the width of the graph, but the highest counts remained relatively stable throughout the observation period, with a decrease around 2009.
+
+
+# Monthly Fish Passage
+
+```{r}
+#monthly mean counts
+fish_month <- species_counts %>% 
+  index_by(yr_mo = ~yearmonth(.)) %>% 
+  summarize(monthly_counts = sum(count, na.rm = TRUE))
+
+#plot
+fish_month %>% 
+  gg_season(y = monthly_counts,
+            pal = (cal_palette("kelp1"))) +
+  theme_minimal() +
+  labs(x = "Month",
+       y = "Fish Count",
+       color = "Year")
+```
+
+**Figure 2:** Monthly fish passage counts for coho salmon, jack coho salmon, and steelhead trout through the Willamette Falls fish ladder from 2001 to the end of 2010, color-coded by year. Data: Columbia River DART.
+
+## Takeaways
+
+- The three fish species peak at different times of year, with coho and jack coho salmon activity increasing between August and November (peaking in September) and steelhead trout activity increasing between January and July (peaking between April and June).
+
+- Coho and jack coho salmon have very similar seasonal activity patterns, possibly due to being more closely related to each other than they are to steelhead trout.
+
+- Steelhead trout have a longer period of activity (about 6 months) than either salmon species (about 4 months).
+
+- 2009 and 2010 were highly productive years for coho salmon.
+
+# Annual Fish Passage
+
+```{r}
+#yearly counts
+fish_annual <- species_counts %>% 
+  index_by(yearly = ~year(.)) %>% 
+  summarize(annual_counts = sum(count, na.rm = TRUE))
+
+ggplot(fish_annual, aes(x = yearly, y = annual_counts)) +
+  geom_line(aes(color = species)) +
+  scale_color_manual(values = cal_palette("superbloom3")) +
+  scale_x_continuous(breaks = seq(2001, 2010, 2)) +
+  theme_minimal() +
+  labs(x = "Year",
+       y = "Fish Count")
+```
+
+**Figure 3:** Annual fish passage counts for coho salmon, jack coho salmon, and steelhead trout through the Willamette Falls fish ladder from 2001 to the end of 2010, color-coded by species. Data: Columbia River DART.
+
+## Takeaways
+
+- Annual counts of steelhead trout decreased consistently through 2009, and then began increasing again.
+
+- Annual counts of both coho and jack coho salmon were substantially lower than counts of steelhead, with the exception of 2009, where coho salmon counts exceeded steelhead trout counts.
+
+- Coho numbers began increasing after 2008, while jack coho numbers remained relatively stable.
+
+- Of the three fish species, jack coho salmon had the least variance from year to year.
